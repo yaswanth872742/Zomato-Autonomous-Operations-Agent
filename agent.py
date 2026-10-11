@@ -194,8 +194,37 @@ def run_agent(user_request, max_steps=5):
         ]
 
         if not function_calls:
+            tool_results = [
+                event.get("result",{})
+                for event in trace
+                if event.get("event") == "tool_result"
+            ]
+
+            analysis_results = [
+                event
+                for event in trace
+                if event.get("event") == "tool_result"
+                and event.get("tool") == "analyze_city"
+            ]
+
+            if analysis_results:
+                latest_result = analysis_results[-1].get("result",{})
+                if latest_result.get("status") == "success":
+                    final_status = "completed"
+                else:
+                    final_status = "completed_with_rejection"
+            elif any(
+                result.get("status") == "error"
+                for result in tool_results
+            ):
+                final_status = "completed_with_error"
+            else:
+                # No analysis tool was called. The agent may have
+                # requested clarification or refused an unsupported action.
+                final_status = "completed_with_rejection"
+                
             return {
-                "status": "completed",
+                "status": final_status,
                 "answer": response.text or "No final answer was returned.",
                 "trace": trace,
             }
