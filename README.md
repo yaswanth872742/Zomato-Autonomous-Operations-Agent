@@ -273,6 +273,35 @@ Rather than relying only on generated text, the agent calls analytical functions
 
 The main focus is the complete workflow: **understanding a task, executing tools, observing results, verifying outputs, and communicating a useful decision.**
 
+
+## Screenshots
+
+### 1. Agent Interface
+Enter an operational task for the agent to analyze.
+
+![Agent Interface](screenshots/01-agent-interface.png)
+
+### 2. Demand Forecast
+City-level demand forecast, confidence, and risk summary.
+
+![Demand Forecast](screenshots/02-demand-forecast.png)
+
+### 3. Rider Planning
+Locality-level priorities and recommended rider allocation.
+
+![Rider Planning](screenshots/03-rider-planning.png)
+
+### 4. Evidence and Summary
+Supporting demand trends and verified planning figures.
+
+![Evidence and Summary](screenshots/04-evidence-and-summary.png)
+
+### 5. Verification
+Verification checks and execution status for the generated plan.
+
+![Verification](screenshots/05-verification.png)
+
+
 ## Author
 
 **Yaswanth Yadala**
