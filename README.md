@@ -1,168 +1,130 @@
-# Zomato Autonomous Operations Agent
+# 🤖 Zomato Autonomous Operations Agent
 
-An AI-powered operations planning agent that combines machine learning, tool execution, and result verification to prepare demand forecasts and rider deployment recommendations.
+An AI-powered operations assistant that uses demand forecasting, Python tools, and verification checks to prepare demand summaries and rider planning recommendations.
 
-The project extends an existing Zomato demand forecasting and rider planning system by adding a Gemini-powered agent that interprets an operations request, calls Python tools, gathers results, verifies key planning figures, and presents an actionable report.
+**Live Demo:** [Try the application](https://zomato-autonomous-operations-agent.streamlit.app/)  
+**GitHub Repository:** [View the source code](https://github.com/yaswanth872742/Zomato-Autonomous-Operations-Agent)
 
-## Project Overview
+---
 
-Food delivery operations need more than a demand forecast. They need to identify high-demand localities, estimate rider requirements, assess operational risks, and prepare a practical deployment plan.
+## 📌 Project Overview
 
-This project demonstrates how an AI agent can use an existing analytical system to complete a defined operational task instead of only answering questions using generated text.
+Food delivery operations need to understand demand patterns and plan rider availability across different localities. This project explores how an AI agent can assist with these decisions by connecting a language model to an existing Python analytics backend.
 
-The agent accepts a natural-language request, identifies the required analysis, invokes available tools, collects their outputs, checks the results, and generates a final report.
+The user provides an operational goal, such as preparing a demand forecast and rider planning summary for a city. The agent uses available tools to retrieve analytical results, interpret the findings, and produce a structured recommendation with supporting evidence.
 
-**Main workflow:**
+The application is built using Python, Streamlit, and the Gemini API.
 
-User Request → Understand the Goal → Select Tools → Execute Analysis → Observe Results → Verify Output → Generate Report
+**Important:** The agent prepares planning recommendations only. It does not dispatch riders or modify live delivery operations.
 
-The application is designed for operational planning and does not dispatch actual riders or modify live delivery operations.
+## 🎯 Objectives
 
-## Business Problem
+- Build an AI agent that can interpret operational requests.
+- Connect an LLM to existing Python functions through tool calling.
+- Generate city-level demand summaries and locality-level rider recommendations.
+- Verify important figures and consistency constraints before presenting the results.
+- Provide an interactive interface for exploring operational planning scenarios.
 
-A city-level demand forecast alone is not sufficient for operational decision-making.
+## ⚙️ How It Works
 
-Operations teams also need to understand:
+The agent follows a tool-assisted workflow:
 
-- How many orders are expected?
-- Which localities should receive higher priority?
-- How many active and standby riders should be planned?
-- What risks or data limitations should be considered?
-- Are the generated recommendations consistent with the analytical results?
+1. **Goal interpretation:** Understands the user's operational request.
+2. **Tool selection:** Identifies the analytical tools required to answer the request.
+3. **Tool execution:** Calls Python functions that access the forecasting and operational analytics backend.
+4. **Observation:** Uses the returned results to prepare an operational summary.
+5. **Verification:** Checks whether the forecast exists, locality data is sufficient, rider recommendations are valid, and locality allocations do not exceed the city forecast.
+6. **Final response:** Presents the planning recommendation, supporting evidence, and verification status.
 
-The objective is to automate the preparation of this planning report while keeping the underlying calculations grounded in the existing Python backend.
+The language model handles task interpretation and tool orchestration, while the Python backend provides the underlying analytical results.
 
-## Solution Approach
-
-The project combines a forecasting and decision-support system with an AI agent.
-
-1. **Understand the request:** The agent receives an operational task in natural language.
-2. **Plan the analysis:** It determines which available tools are required.
-3. **Execute tools:** The agent calls Python functions that analyze city demand and locality-level planning data.
-4. **Observe results:** It receives structured outputs containing forecasts, locality priorities, rider recommendations, and risk information.
-5. **Verify the results:** Validation checks examine whether the forecast exists, locality data is sufficient, rider recommendations are valid, and locality allocation does not exceed the city forecast.
-6. **Generate the report:** The agent presents the findings, operational recommendations, supporting evidence, and relevant limitations.
-
-## Agent Architecture
-
-The system uses a tool-based agent architecture.
-
-**User Interface — `agent_app.py`**
-
-Provides a Streamlit interface where users enter a request, run the agent, and review its response, verification results, and execution trace.
-
-**Agent Logic — `agent.py`**
-
-Manages the bounded agent loop, communicates with the Gemini model, processes tool calls, and prepares the final response.
-
-**Tool Layer — `agent_tools.py`**
-
-Exposes Python functions for accessing the forecasting and operational planning logic.
-
-**Analytical Backend — `backend.py`**
-
-Contains the existing data processing, demand forecasting, locality scoring, rider planning, and decision-support functions.
-
-**Forecasting Model — `forecast_model.pkl`**
-
-Stores the trained forecasting model used by the analytical backend.
-
-### Execution Flow
+## 🏗️ System Architecture
 
 ```text
-Natural-Language Request
-          |
-          v
-     Gemini Model
-          |
-          v
-   Select Available Tool
-          |
-          v
-  Python Backend Execution
-          |
-          v
-    Observe Tool Results
-          |
-          v
-   Verify Planning Figures
-          |
-          v
-     Final Report
+User Request
+     ↓
+Streamlit Interface
+     ↓
+Gemini LLM Agent
+     ↓
+Tool Selection and Execution
+     ↓
+Python Analytics Backend
+     ↓
+Demand Forecast and Locality Analysis
+     ↓
+Verification Checks
+     ↓
+Operational Planning Summary
 ```
 
-## Key Features
+The agent uses the existing analytics backend rather than relying on the language model to invent operational figures.
 
-- Natural-language requests for operational planning.
-- Integration with an existing Python forecasting backend.
-- Tool-based execution using structured analytical results.
-- City-level demand forecasting and historical comparisons.
-- Locality-level demand scoring and prioritization.
-- Active rider and standby rider recommendations.
-- Operational risk and data-sufficiency information.
-- Verification checks for key planning figures.
-- Execution trace showing tool calls and their results.
-- A Streamlit interface for reviewing the final report.
+## ✨ Key Features
 
-## Demand Forecasting Methodology
+### 1. City-Level Demand Forecasting
 
-The underlying forecasting system processes historical order data and aggregates it into daily demand.
+- Retrieves the forecast for the requested city.
+- Compares forecast demand with historical and recent demand averages.
+- Presents demand status, confidence information, and operational risk indicators where available.
 
-The forecasting workflow includes:
+### 2. Locality-Level Rider Planning
 
-1. Data validation and preparation.
-2. Daily demand aggregation.
-3. Feature engineering using lag values, rolling statistics, and calendar-related features.
-4. Demand prediction using the trained XGBoost model.
-5. Locality demand scoring and forecast allocation.
-6. Rider planning based on predefined operational rules.
+- Identifies localities that require operational attention.
+- Presents locality priorities and forecast order counts.
+- Recommends active and standby rider allocations based on the existing planning logic.
 
-### Locality Demand Scoring
+### 3. Evidence-Based Recommendations
 
-The existing system combines historical and recent locality demand:
+- Uses analytical outputs from the Python backend.
+- Explains why certain localities receive higher priority.
+- Presents supporting demand trends and planning figures.
 
-- Historical demand: 75%
-- Recent demand: 25%
+### 4. Verification and Execution Trace
 
-This weighting helps identify localities with established demand while considering recent activity.
+- Checks the availability of forecast results.
+- Validates locality data sufficiency.
+- Checks rider recommendation constraints.
+- Verifies that locality-level allocated orders do not exceed the city forecast.
+- Displays execution status and verification results.
 
-### Data Sufficiency
+These checks validate selected consistency rules; they do not independently establish forecast accuracy.
 
-The underlying system uses a minimum threshold of 30 historical records for locality-level planning. When sufficient data is unavailable, the system should communicate the limitation rather than present an unsupported locality recommendation.
+### 5. Operational Safety
 
-### Rider Planning
+The application is designed as a decision-support prototype. It does not connect to a live rider dispatch system and cannot execute real-world delivery operations.
 
-The backend estimates active and standby rider requirements using predefined planning rules. These recommendations are intended for planning purposes and are not validated real-world fleet deployment decisions.
+## 🛠️ Technology Stack
 
-## Result Verification
+| Technology | Purpose |
+|---|---|
+| Python | Application logic and backend processing |
+| Streamlit | Interactive web interface |
+| Gemini API | Language model and tool-calling orchestration |
+| Pandas | Data loading and analysis |
+| NumPy | Numerical operations |
+| Joblib | Loading the saved forecasting model |
+| Scikit-learn | Machine learning dependencies, where used by the backend |
+| GitHub | Source code and version control |
+| Streamlit Community Cloud | Application deployment |
 
-Verification is an important part of the agent workflow because a fluent AI response alone does not guarantee that the analysis is correct.
-
-The application checks:
-
-- Whether a forecast value exists.
-- Whether locality data is sufficient.
-- Whether rider recommendations are valid.
-- Whether locality-level allocated orders exceed the city forecast.
-
-The interface displays the verification status and supporting figures. These checks establish basic consistency of the results; they do not prove that the forecast is accurate or that the operational recommendations are optimal.
-
-## Technology Stack
-
-- **Python** — Application logic and tool execution.
-- **Google Gemini API** — Natural-language understanding and agent decisions.
-- **Google Gen AI SDK** — Communication with the Gemini model.
-- **Pandas and NumPy** — Data processing and numerical operations.
-- **XGBoost and Scikit-learn** — Forecasting and machine-learning utilities.
-- **Joblib** — Loading the trained forecasting model.
-- **Streamlit** — Interactive application interface.
-- **python-dotenv** — Loading environment variables during local development.
-
-## Project Structure
+## 📂 Project Structure
 
 ```text
 Zomato-Autonomous-Operations-Agent/
-|
+│
+├── datasets/
+│   └── DATA1_Cleaned.xlsx
+│
+├── notebooks/
+│
+├── screenshots/
+│   ├── 01-agent-interface.png
+│   ├── 02-demand-forecast.png
+│   ├── 03-rider-planning.png
+│   ├── 04-evidence-and-summary.png
+│   └── 05-verification.png
+│
 ├── agent.py
 ├── agent_app.py
 ├── agent_tools.py
@@ -170,140 +132,133 @@ Zomato-Autonomous-Operations-Agent/
 ├── backend.py
 ├── forecast_model.pkl
 ├── requirements.txt
-├── README.md
-├── .gitignore
 ├── .env.example
-|
-├── datasets/
-├── notebooks/
-└── screenshots/
+├── .gitignore
+└── README.md
 ```
 
-The original dashboard and forecasting backend are retained, while the agent modules add the autonomous operations workflow. The dataset and supporting folders should contain the files required by the application.
+## 🖥️ Application Screenshots
 
-## Setup and Installation
+### 1. Agent Interface
 
-### 1. Clone the Repository
+Enter an operational task and ask the agent to prepare a planning summary.
+
+![Agent Interface](screenshots/01-agent-interface.png)
+
+### 2. City-Level Demand Forecast
+
+View forecast orders, demand status, confidence information, and risk indicators.
+
+![Demand Forecast](screenshots/02-demand-forecast.png)
+
+### 3. Locality-Level Rider Planning
+
+Review locality priorities, forecast orders, and recommended rider allocations.
+
+![Rider Planning](screenshots/03-rider-planning.png)
+
+### 4. Evidence and Summary
+
+Review supporting demand trends and the rationale behind the planning recommendations.
+
+![Evidence and Summary](screenshots/04-evidence-and-summary.png)
+
+### 5. Verification
+
+Inspect verification results and execution status for the generated plan.
+
+![Verification](screenshots/05-verification.png)
+
+## 🚀 Run Locally
+
+### Prerequisites
+
+- Python 3.11
+- A Gemini API key
+- Git (optional if downloading the repository as a ZIP)
+
+### 1. Clone the repository
 
 ```bash
-git clone <your-github-repository-url>
+git clone https://github.com/yaswanth872742/Zomato-Autonomous-Operations-Agent.git
 cd Zomato-Autonomous-Operations-Agent
 ```
 
-### 2. Install Dependencies
-
-Use Python and install the packages listed in `requirements.txt`.
+### 2. Create a virtual environment
 
 ```bash
-python -m pip install -r requirements.txt
+python -m venv .venv
 ```
 
-### 3. Configure the Gemini API Key
+Activate it on Windows:
 
-Create a `.env` file in the project root:
-
-```text
-GEMINI_API_KEY=your_gemini_api_key
+```powershell
+.venv\Scripts\Activate.ps1
 ```
 
-Replace the example value with your own API key.
+### 3. Install dependencies
 
-**Security:** Never commit `.env` or expose your API key in the source code, screenshots, or public repository. Use `.env.example` to document the required variable without including a real key.
+```bash
+pip install -r requirements.txt
+```
 
-### 4. Run the Agent Application
+### 4. Configure the API key
+
+Set the `GEMINI_API_KEY` environment variable using your own Gemini API key. If you use a local `.env` file, ensure the application loads it correctly.
+
+For example, in PowerShell:
+
+```powershell
+$env:GEMINI_API_KEY = "your_actual_api_key"
+```
+
+Never commit your actual API key to GitHub.
+
+### 5. Start the application
 
 ```bash
 python -m streamlit run agent_app.py
 ```
 
-Open the local URL displayed in the terminal, normally `http://localhost:8501`.
+Open the local URL displayed in the terminal.
 
-The existing dashboard can be run separately using:
+## 🧪 Testing
 
-```bash
-python -m streamlit run app.py
-```
+The agent was manually tested with the following scenarios:
 
-Make sure the required dataset and trained model are available at the paths expected by the backend.
+- Preparing a demand forecast and rider planning summary for Chennai.
+- Preparing a demand forecast and rider planning summary for Agra.
+- Identifying high-priority localities and explaining the supporting evidence.
+- Handling a request to dispatch riders immediately, which is outside the application's capabilities.
+- Running the deployed application and generating a planning response.
 
-## Example Usage
+The application also performs internal verification checks on selected planning figures and allocation constraints.
 
-A sample request is:
+These tests demonstrate basic functional behavior, not comprehensive reliability or predictive model performance. Forecast accuracy requires separate evaluation against actual outcomes.
 
-> Prepare a demand forecast and rider planning summary for Chennai for the next forecast date. Identify the highest-priority localities, calculate active and standby rider requirements, assess operational risks, and verify the planning figures.
+## ⚠️ Limitations
 
-The agent uses the available analytical tools to prepare the report.
+- Forecast quality depends on the available data and the underlying analytical model.
+- Rider allocations are recommendations based on the existing planning logic, not guaranteed optimal staffing decisions.
+- The application does not dispatch riders or modify live operations.
+- Verification checks assess selected consistency rules rather than forecast accuracy.
+- The application depends on API availability, usage limits, and network connectivity.
+- The current implementation is a prototype and has not been validated as a production delivery operations system.
 
-The resulting report can include:
+## 🔮 Future Improvements
 
-- Forecasted city-level orders.
-- Historical and recent demand comparisons.
-- Priority localities and their demand scores.
-- Recommended active and standby riders.
-- Operational risks and data limitations.
-- Verification results and supporting evidence.
+- Evaluate forecast accuracy using suitable historical holdout data and error metrics.
+- Add automated tests for tool execution, validation rules, and failure handling.
+- Improve recovery from API errors, missing data, and invalid tool responses.
+- Add persistent task history and structured execution logs.
+- Introduce human approval workflows for operational recommendations.
+- Explore integrations with live operational systems, subject to appropriate permissions and safety controls.
 
-## Assumptions and Limitations
+## 👨‍💻 Author
 
-- The forecasting model uses historical order data rather than live order inflow.
-- Demand is aggregated at the daily level, so exact hourly peak periods are unavailable.
-- Locality scoring and rider planning use predefined rules and assumptions.
-- Verification checks test consistency, not forecast accuracy.
-- Recommendations do not account fully for live rider availability, traffic, weather, or restaurant preparation times.
-- The Gemini API depends on network connectivity, model availability, and API usage limits.
-- The agent operates within a bounded execution loop and the tools made available to it.
-- The application prepares recommendations only; it does not perform real-world rider dispatch.
+Developed as a project exploring AI agents, tool calling, operational analytics, and verification.
 
-## Future Improvements
+**Project Links**
 
-- Add more robust retries and recovery for failed tool calls.
-- Expand verification with independent calculations and additional edge-case tests.
-- Add human approval before any future operational action.
-- Introduce persistent task state and execution history.
-- Integrate real-time order and rider availability data where authorized.
-- Add automated tests and structured logging.
-- Deploy the application with securely managed API credentials.
-- Evaluate forecast quality and agent reliability using repeatable test cases.
-
-## Project Takeaway
-
-This project demonstrates how an existing machine-learning application can be extended into a tool-using AI agent.
-
-Rather than relying only on generated text, the agent calls analytical functions, uses their results to prepare operational recommendations, and checks key figures before presenting its final response.
-
-The main focus is the complete workflow: **understanding a task, executing tools, observing results, verifying outputs, and communicating a useful decision.**
-
-
-## Screenshots
-
-### 1. Agent Interface
-Enter an operational task for the agent to analyze.
-
-![Agent Interface](screenshots/01-agent-interface.png)
-
-### 2. Demand Forecast
-City-level demand forecast, confidence, and risk summary.
-
-![Demand Forecast](screenshots/02-demand-forecast.png)
-
-### 3. Rider Planning
-Locality-level priorities and recommended rider allocation.
-
-![Rider Planning](screenshots/03-rider-planning.png)
-
-### 4. Evidence and Summary
-Supporting demand trends and verified planning figures.
-
-![Evidence and Summary](screenshots/04-evidence-and-summary.png)
-
-### 5. Verification
-Verification checks and execution status for the generated plan.
-
-![Verification](screenshots/05-verification.png)
-
-
-## Author
-
-**Yaswanth Yadala**
-
-*Zomato Autonomous Operations Agent — AI-assisted Demand Forecasting and Rider Planning*
+- [GitHub Repository](https://github.com/yaswanth872742/Zomato-Autonomous-Operations-Agent)
+- [Live Streamlit Demo](https://zomato-autonomous-operations-agent.streamlit.app/)
